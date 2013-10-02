@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Guide-to-git-patch-mode by Dev-Dipesh</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Guide-to-git-patch-mode</h1>
+        <h2></h2>
+        <a href="https://github.com/Dev-Dipesh/Guide-to-GIT-patch-mode" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p><a href="http://gitscm.org/">git</a> and GitHub have revolutionized not only how I do development, but how we developers share code.</p>
+
+<p>I have two tools I need to do software development: an editor and version control.</p>
+
+<p><a href="http://pragprog.com/the-pragmatic-programmer">The Pragmatic Programmer</a> advocates you should know your editor inside and out. So why don't you know your version control system just as well?</p>
+
+<p>Hello everyone, today I am demonstrating a little new feature of GITHub that everyone must know about and that feature is <strong>git add patch mode</strong>.</p>
+
+<p>Now I know you are familiar with <code>&gt;git add</code> the command that takes an entire file and adds it to the staging area, allowing it to be the part of your commit.
+But patch mode is a way to stage only parts of the change file instead of the entire one.</p>
+
+<p>Patch mode using <code>git add -p</code> allows you to stage parts of a changed file, instead of the entire file. This allows you to make concise, well-crafted commits that make for an easier to read history.</p>
+
+<p>Since I learned about it a month or so ago, patch mode has taken my git usage to another level. It's one of the most powerful git commands, right up there with rebasing, but much less dangerous!</p>
+
+<p>So, let say you make two distinct changes to a file becomes time to commit those changes but they are related to each other at all. For example you added some new functionality near the top of the file and also made some small formatting change to unrelated part near the bottom of the file. Let's say you are in a hurry and just commit the file you have right away.</p>
+
+<p><code>&gt;git add myfile</code> <a href="http://explainshell.com/explain?cmd=git+add">Command Explaination</a>
+<code>&gt;git commit -m "commit message"</code> <a href="http://explainshell.com/explain?cmd=git+commit+-m">Command Explaination</a></p>
+
+<p><strong>or</strong></p>
+
+<p><code>&gt;git commit -a -m "commit message"</code> <a href="http://explainshell.com/explain?cmd=git+commit+-a+-m">Command Explaination</a></p>
+
+<p><strong>and</strong></p>
+
+<p><code>&gt;git push -u origin master</code> <a href="http://explainshell.com/explain?cmd=git+push+-u+origin+master">Command Explaination</a></p>
+
+<p>So you have pushed the new functionality out the production. Until later your boss calls and that's new feature causing some measure problems and need to be removed right away. You use the command:</p>
+
+<p><code>&gt;git revert</code> <a href="http://explainshell.com/explain?cmd=git+revert">Command Explaination</a></p>
+
+<p>to undo the changes but one of your commit had code for this new feature and also contains some unrelated syntax changes, so you end up undoing both the new feature and the syntax changes because they are part of the same commit.</p>
+
+<p>You want to those syntax changes stay in the code base but you can't do much about it and you are in a hurry and stuff are in the same commit. If only you had known about and taking time to use <strong>git add patch mode</strong> you could have stage the commit to those two changes in sets of separate commits, so later if and when the time comes one you didn't have to also revert back the other.</p>
+
+<p>So, none of us required to crack the extra effort to keep the required changes and also give us a cleaner commit history.</p>
+
+<p>So patch mode, let's get down to it:</p>
+
+<hr><h2>
+<a name="step-1" class="anchor" href="#step-1"><span class="octicon octicon-link"></span></a>STEP 1</h2>
+
+<p>Move to your current working repository and check the status of the project by using:</p>
+
+<p><code>&gt;git status</code> <a href="http://explainshell.com/explain?cmd=git+status">Command Explaination</a></p>
+
+<p>If there are no changes to commit yet than first make some changes and then check the status again (as shown in figure).</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/0emzn38nuyeg4de/status.png" alt="alt text"></p>
+
+<p><strong>See here we have changes to commit in the file <code>config.yml</code></strong></p>
+
+<hr><h2>
+<a name="step-2" class="anchor" href="#step-2"><span class="octicon octicon-link"></span></a>Step 2</h2>
+
+<p>Use below git command to check what has changed in the file:</p>
+
+<p><code>&gt;git diff</code> <a href="http://explainshell.com/explain?cmd=git+diff">Command Explaination</a></p>
+
+<p>Here you will get all the changes that you have made to the file:</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/6sbs4k3wt9ypu86/diff.png" alt="alt text"></p>
+
+<hr><h2>
+<a name="step-3" class="anchor" href="#step-3"><span class="octicon octicon-link"></span></a>STEP 3</h2>
+
+<p>Now it's time to use patch mode. Use following command:</p>
+
+<p><code>&gt;git add -p</code> <a href="http://explainshell.com/explain?cmd=git+add+-p">Command Explaination</a></p>
+
+<p>GITHub patch mode will start out by cycling threw all of the hunks that are in our code.</p>
+
+<blockquote>
+<p>Hunk is a intelligently derived block of code that get things as related to one another (not necessarily related).</p>
+</blockquote>
+
+<p>Well, GIT split out your hunks based on white space (see the figure):</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/tofdwl0hdau7ocm/Step%202.png" alt="alt text"></p>
+
+<p>See we have list of different commands at the bottom of the screen, that we can start using in step 4.</p>
+
+<hr><h2>
+<a name="step-4" class="anchor" href="#step-4"><span class="octicon octicon-link"></span></a>STEP 4</h2>
+
+<p>In last step we have received a command with list of options in it, in order to know what all of those commands actually does just type <code>?</code> and hit enter. And see you have a full help list associated with each one.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/y50868ux87cybtu/STEP%203.png" alt="alt text"></p>
+
+<p>Let list the more useful ones:</p>
+
+<ul>
+<li>
+<code>y</code> - this is stage that particular hunk, i.e. it stage one hunk at a time</li>
+<li>
+<code>n</code> - skip that hunk and don't stage it</li>
+<li>
+<code>q</code> - neither stage this hunk nor stage any other in the file. This will let you out of the command</li>
+<li>
+<code>a</code> - this will stage the current hunk and all the remaining hunks in the file</li>
+<li>
+<code>d</code> - don't stage any hunk which aren't staged</li>
+<li>
+<code>g</code> - help you to move to any hunk immediately</li>
+<li>
+<code>/</code> - this is for searching hunk using regular expressions</li>
+<li>
+<code>s</code> - this will split one single hunk even further in to more smaller hunks</li>
+<li>
+<code>e</code> - manually edit the current hunk, mostly useful in larger hunk and most typical to grasp</li>
+</ul><p>Now let stage the current hunk by using <code>y</code> and use <code>n</code> for all other for now. You can also use <code>q</code> for remaining others but <code>n</code> will help you to learn about how many hunks you have in the file.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/lbp7w920xn0pnk1/STEP%204.png" alt="alt text"></p>
+
+<hr><h2>
+<a name="step-5" class="anchor" href="#step-5"><span class="octicon octicon-link"></span></a>STEP 5</h2>
+
+<p>Now check the status of your repository again</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/7gwpy8qh43yx7nb/STEP%205%20changes%20staged%20and%20unstaged.png" alt="alt text"></p>
+
+<p>As you can see there are both staged and unstaged changes in the repo. Now use </p>
+
+<p><code>git diff --cached</code> <a href="http://explainshell.com/explain?cmd=git+diff+--cached">Command Explaination</a></p>
+
+<p>to see the cached changes (hunk) which are staged.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/062lpg3za0y7w6i/STEP%206%20diff%20cached.png" alt="alt text"></p>
+
+<p>This is how you can commit your changes in different commits and then can push them to the original repository on GITHub. This will also preserve you from reverting both wanted and unwanted changes which are in the same commit without patch mode.</p>
+
+<hr><h2>
+<a name="split-hunks" class="anchor" href="#split-hunks"><span class="octicon octicon-link"></span></a>SPLIT HUNKS</h2>
+
+<p>Now let see how split <code>s</code> works. See in the figure below we have a big single hunk,</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/d8dh5no9th58dg0/STEP%207%20split%20A.png" alt="alt text"></p>
+
+<p>to split it in more smaller hunks just use <code>s</code>. As you can see in the figure below now the earlier hunk is split out into 2 smaller hunks and then you commit them according to your will</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/fcjc1ro7ylft6v2/STEP%207%20split%20B.png" alt="alt text"></p>
+
+<hr><h2>
+<a name="editing-larger-hunks" class="anchor" href="#editing-larger-hunks"><span class="octicon octicon-link"></span></a>EDITING LARGER HUNKS</h2>
+
+<p>Here in this section before we proceed any further, update your GIT installation to the latest release, sooner you will know why.</p>
+
+<p>So this time here we have a bigger hunk (see in the figure):</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/i4da7g95yk1qtxv/step1new.png" alt="alt text"><img src="https://dl.dropboxusercontent.com/s/9ph832vcx2cwdj5/step1newb.png" alt="alt text"></p>
+
+<p>Here now use <code>e</code> to edit the hunk. You see you have totally new interface in front of you, this is where you can edit your hunk. </p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/ypz690q20tl6hd3/step2vimedit.png" alt="alt text"><img src="https://dl.dropboxusercontent.com/s/o6fntybwolgrrea/step2vimeditb.png" alt="alt text"></p>
+
+<p>In order to work in this interface effectively you must have the knowledge of Unix <strong>vim</strong> editor. Don't worry it isn't a rocket science. Here is an online guide to vim editor worth checking:</p>
+
+<ul>
+<li><a href="http://vimdoc.sourceforge.net">Vim Online Documentation</a></li>
+<li><a href="http://www.openvim.com/tutorial.html">Interactive Vim Tutorial</a></li>
+</ul><p>Let me discuss here some basic concepts of vim to understand our further work. Vim has three modes of operations:</p>
+
+<ol>
+<li>Command mode - where the whole hunk is visible.</li>
+<li>Insert mode - when you press <code>i</code> or <code>insert</code>, etc. keys then the command mode will convert in insert mode, i.e. you can edit the hunk.</li>
+<li>ex - Command mode or Bottom line mode - this mode permits us to give commands to the editor, once you are in the <strong>Insert mode</strong> press <code>Esc</code> key to enter in the command mode.</li>
+</ol><p><img src="https://dl.dropboxusercontent.com/s/o8f8362mbqg9yzk/LXF96.tut_vim.diagram%20%281%29.png" alt="alt text"></p>
+
+<p>Now let's get back to the subject, in the above hunk there are some text in red and some text in blue. The text in red are those which are removed from the file <code>index.html</code> and the text blue is that one which is added to the file. See in the bottom of the file there are some instructions regarding how to edit hunk.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/fa62dyjmmzq3ocy/instructions.png" alt="alt text"></p>
+
+<p>Check the text in blue carefully, there are two nested <code>&lt;ul&gt;</code> in it. Let remove the inner <code>&lt;ul&gt;</code>. To achieve this simply place the cursor in the beginning of the inner <code>&lt;ul&gt;</code> and then count the number of rows to be deleted <strong>(NOTE: Remember to count from <code>0</code>)</strong>. Let there are 9 lines to be removed than  type:</p>
+
+<p><code>10d</code> **if you aren't in command mode then press <code>Esc</code> and then type.</p>
+
+<p>(Consider the figure)</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/fjq0nj1p17ah6qg/lines%20removed.png" alt="alt text"></p>
+
+<p>after you have made all the changes then in the ex-command mode type</p>
+
+<p><code>:wq</code> <strong>used to save changes and quit</strong></p>
+
+<p>in case if you don't want to save changes then use <code>:q</code> to quit without saving, and to close it forcefully use <code>!</code> in the end of your command.</p>
+
+<p>After <code>:wq</code> you will get back to your main repository, here now check the status by </p>
+
+<p>`&gt;git status'</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/s4ztxh9pux4wkto/editstatus.png" alt="alt text"></p>
+
+<p>Now check the cached diff using</p>
+
+<p><code>&gt;git diff --cached</code></p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/5szqqh45qe3oi2r/final.png" alt="alt text"></p>
+
+<p>Here you can see in our this stage of hunk the inner <code>&lt;ul&gt;</code> is removed.</p>
+
+<p><strong>Now one last point to cover, you remembered in the beginning of this section of the guide I have told you to update your GITHub installation, so here I will tell you why?</strong></p>
+
+<p>Check out this image where we have not edited our hunk yet, there is a line on top of it</p>
+
+<p><code>@@ -258,34 +258,33 @@</code></p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/i4da7g95yk1qtxv/step1new.png" alt="alt text"></p>
+
+<p>in previous version of GITHub only editing the file won't work and fail by giving</p>
+
+<p><code>error: patch failed....</code>
+<code>error: .....: patch does not apply</code></p>
+
+<p>you also have to edit the above numbers accordingly. Now what those numbers actually are, let break them down in a list:</p>
+
+<ul>
+<li>
+<strong>-258</strong> -&gt; The line number in your original file from which the hunk code begins.</li>
+<li>
+<strong>34</strong> -&gt; Number of lines deleted in the original file.</li>
+<li>
+<strong>258</strong> -&gt; It represents the line from which lines are added in the original file.</li>
+<li>
+<strong>33</strong> -&gt; Number of lines added in the original file.</li>
+</ul><p>Consider the figure below, it is the original file and the selected code is the one which is visible in the hunk</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/ygg09ks6684dtwg/2013-09-24%2014_00_30-F__Users_REPL_Documents_GitHub_uikit-first_index.html%20%28starter-kit-1.0.0%29%20-%20Subl.png" alt="alt text"></p>
+
+<p>But in the updated version of GITHub you won't need to deal with these numbers. Checkout the hunk image after deleting the <code>&lt;ul&gt;</code>, the numbers in the top line are automatically changed</p>
+
+<p><img src="https://dl.dropboxusercontent.com/s/5szqqh45qe3oi2r/final.png" alt="alt text"></p>
+
+<p>So, In this tutorial you can how <strong>patch mode</strong> is a life savior command of GITHub.</p>
+
+<p>If you have any trouble in any of the step then feel free to ask them here and I highly recommend you to get handy with patch mode. Also please comment and share your reviews about this guide.</p>
+
+<h2>
+<a name="other-guides" class="anchor" href="#other-guides"><span class="octicon octicon-link"></span></a>Other Guides</h2>
+
+<p>This is my third extensive guide, you can also fork this guide and my previous guides for future reference (links below):</p>
+
+<ul>
+<li><a href="https://github.com/Dev-Dipesh/Guide-twitter-bootstrap">Twitter Bootstrap</a></li>
+<li><a href="https://github.com/Dev-Dipesh/automatic-deploy-site-with-git">Automatically deploy your site with GIT</a></li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p><strong>MIT LICENSE</strong> - <a href="http://dev-dipesh.mit-license.org/">http://dev-dipesh.mit-license.org/</a></p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/Dev-Dipesh/Guide-to-GIT-patch-mode/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/Dev-Dipesh/Guide-to-GIT-patch-mode/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/Dev-Dipesh/Guide-to-GIT-patch-mode"></a> is maintained by <a href="https://github.com/Dev-Dipesh">Dev-Dipesh</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
